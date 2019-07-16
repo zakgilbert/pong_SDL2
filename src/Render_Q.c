@@ -9,14 +9,12 @@ static void _destroy(Render_Q *this)
 {
     struct Node *temp;
 
-    printf("Freeing\n");
     if (NULL == this)
         return;
     while (NULL != this->front)
     {
         temp = this->front;
         this->front = this->front->next;
-        printf("%p\n", temp);
         free(temp);
     }
     free(this);
@@ -28,7 +26,6 @@ static void _print(Render_Q *this)
 
     while (NULL != current)
     {
-        printf("%p\n", (void *)current);
         current = current->next;
     }
     printf("\n");

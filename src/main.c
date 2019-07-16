@@ -11,6 +11,7 @@
 #include "Window_and_Renderer.h"
 #include "Delta.h"
 #include "Render_Q.h"
+#include "Ball.h"
 
 void test_func(void *obj, struct SDL_Renderer *renderer)
 {
@@ -29,24 +30,28 @@ int main(int argc, char **argv)
     int quit;
     struct SDL_Window *window = NULL;
     struct SDL_Renderer *renderer = NULL;
-
     window = make_window("Window");
     renderer = make_renderer(&window);
+    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "best");
+    SDL_RenderSetLogicalSize(renderer, WINDOW_WIDTH, WINDOW_HEIGHT);
 
     set_up_timer();
     quit = 0;
-    Render_Q *test_q = render_q_create();
 
-    for (int i = 0; i < 10; i++)
-    {
-        test_q->enqueue(test_q, test_q->create_node(NULL, test_func));
-    }
-    test_q->print(test_q);
-    test_q = test_q->execute(test_q, renderer);
-    test_q->print(test_q);
+    Ball *ball = ball_create("art/ball.png", renderer);
+    Render_Q *render_q = render_q_create();
+    int spd = 20;
+    ball->rect.x = 0;
+    ball->rect.y = WINDOW_HEIGHT / 2;
     union SDL_Event ev;
     while (!quit)
     {
+        start_timer();
+        render_q->enqueue(render_q, render_q->create_node(ball, ball->render));
+        SDL_RenderClear(renderer);
+        render_q = render_q->execute(render_q, renderer);
+        SDL_RenderPresent(renderer);
+
         while (SDL_PollEvent(&ev) != 0)
         {
             switch (ev.type)
@@ -56,8 +61,12 @@ int main(int argc, char **argv)
                 break;
             }
         }
+
+        ball->behavior(ball);
+        delay();
+        reset_timer();
     }
-    test_q->destroy(test_q);
+    ball->destroy(ball);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
