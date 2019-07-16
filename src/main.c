@@ -12,6 +12,7 @@
 #include "Delta.h"
 #include "Render_Q.h"
 #include "Ball.h"
+#include "Player.h"
 
 void test_func(void *obj, struct SDL_Renderer *renderer)
 {
@@ -40,6 +41,7 @@ int main(int argc, char **argv)
 
     Ball *ball = ball_create("art/ball.png", renderer);
     Render_Q *render_q = render_q_create();
+    Player *player_1 = player_create(renderer);
     int spd = 20;
     ball->rect.x = 0;
     ball->rect.y = WINDOW_HEIGHT / 2;
@@ -48,6 +50,7 @@ int main(int argc, char **argv)
     {
         start_timer();
         render_q->enqueue(render_q, render_q->create_node(ball, ball->render));
+        render_q->enqueue(render_q, render_q->create_node(player_1, player_1->render));
         SDL_RenderClear(renderer);
         render_q = render_q->execute(render_q, renderer);
         SDL_RenderPresent(renderer);
