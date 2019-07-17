@@ -26,22 +26,31 @@ static int get_intersection_right(struct SDL_Rect r1, struct SDL_Rect r2)
 }
 static int ricochet(Ball *ball, Player *player)
 {
+    int neg = 1;
     if (ball->vel_x > 0)
     {
         if (ball->vel_y < 0)
+        {
             ball->vel_y = abs(get_intersection_right(ball->rect, player->rect)) * -1;
+            neg = -1;
+        }
         else
             ball->vel_y = abs(get_intersection_right(ball->rect, player->rect));
     }
-    else
+    else if (ball->vel_x < 0)
     {
         if (ball->vel_y < 0)
+        {
             ball->vel_y = abs(get_intersection_left(ball->rect, player->rect)) * -1;
+            neg = -1;
+        }
         else
             ball->vel_y = abs(get_intersection_left(ball->rect, player->rect));
     }
     if (abs(ball->vel_y) > MAX_VELOCITY_Y)
-        return MAX_VELOCITY_Y;
+    {
+        return MAX_VELOCITY_Y * neg;
+    }
     return ball->vel_y;
 }
 static void _destroy(Ball *this)

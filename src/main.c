@@ -44,15 +44,15 @@ int main(int argc, char **argv)
     Ball *ball = ball_create("art/ball.png", renderer);
     Render_Q *render_q = render_q_create();
     Player *player_1 = player_create(renderer,
-                                     50,                               // x
+                                     100,                              // x
                                      ((WINDOW_HEIGHT / 2) - (32 / 2)), // y
                                      15,                               // width
-                                     200, 0);                          // height
+                                     100, 0);                          // height
     Player *player_2 = player_create(renderer,
-                                     WINDOW_WIDTH - (50 + 50),         // x
+                                     WINDOW_WIDTH - (100 + 15),       // x
                                      ((WINDOW_HEIGHT / 2) - (32 / 2)), // y
                                      15,                               // width
-                                     200, 0);                          // height
+                                     100, 0);                          // height
     ball->rect.x = WINDOW_WIDTH / 2;
     ball->rect.y = 0;
     union SDL_Event ev;
