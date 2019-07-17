@@ -40,8 +40,8 @@ static int ricochet(Ball *ball, Player *player)
         else
             ball->vel_y = abs(get_intersection_left(ball->rect, player->rect));
     }
-    if (abs(ball->vel_y) > MAX_VELO)
-        return MAX_VELO;
+    if (abs(ball->vel_y) > MAX_VELOCITY_Y)
+        return MAX_VELOCITY_Y;
     return ball->vel_y;
 }
 static void _destroy(Ball *this)
@@ -88,7 +88,7 @@ Ball *ball_create(const char *path, struct SDL_Renderer *renderer)
     this->behavior = _behavior;
     this->collision = _collision;
 
-    this->vel_x = 12;
+    this->vel_x = 16;
     this->vel_y = 8;
 
     this->texture = create_texture(renderer, path, &this->rect);
