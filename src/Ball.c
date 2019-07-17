@@ -1,6 +1,6 @@
 
 /************************
-	 *  Ball.c
+	 *  Ball.c           
 	*/
 
 #include "Ball.h"
@@ -16,12 +16,14 @@ static int get_intersection_left(struct SDL_Rect r1, struct SDL_Rect r2)
 {
     int right_point = (get_middle(r1) - (r1.w / 2));
     int left_point = (get_middle(r2) + (r2.w / 2));
+    printf("Player 2 intersected this ball at %d\n    where the paddle was at %d\n            diff is %d\n", right_point, left_point, (right_point - left_point));
     return (right_point - left_point);
 }
 static int get_intersection_right(struct SDL_Rect r1, struct SDL_Rect r2)
 {
     int right_point = (get_middle(r1) + (r1.w / 2));
     int left_point = (get_middle(r2) - (r2.w / 2));
+    printf("Player 1 intersected this ball at %d\n    where the paddle was at %d\n            diff is %d\n", right_point, left_point, (right_point - left_point));
     return (right_point - left_point);
 }
 static int ricochet(Ball *ball, Player *player)

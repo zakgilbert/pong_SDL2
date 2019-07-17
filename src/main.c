@@ -14,11 +14,22 @@
 #include "Ball.h"
 #include "Player.h"
 
-void test_func(void *obj, struct SDL_Renderer *renderer)
+static void render_court(void *obj, struct SDL_Renderer *renderer)
 {
-    printf("function is being called\n");
-}
+    struct SDL_Rect rect;
+    rect.w = 6;
+    rect.h = 30;
+    rect.x = (WINDOW_WIDTH / 2) - (rect.w / 2);
+    rect.y = 0;
 
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
+    while (rect.y + rect.h <= WINDOW_HEIGHT)
+    {
+        SDL_RenderFillRect(renderer, &rect);
+        rect.y += rect.h + 10;
+    }
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+}
 int main(int argc, char **argv)
 {
 
@@ -49,7 +60,7 @@ int main(int argc, char **argv)
                                      15,                               // width
                                      100, 0);                          // height
     Player *player_2 = player_create(renderer,
-                                     WINDOW_WIDTH - (100 + 15),       // x
+                                     WINDOW_WIDTH - (100 + 15),        // x
                                      ((WINDOW_HEIGHT / 2) - (32 / 2)), // y
                                      15,                               // width
                                      100, 0);                          // height
@@ -62,6 +73,7 @@ int main(int argc, char **argv)
         render_q->enqueue(render_q, render_q->create_node(ball, ball->render));
         render_q->enqueue(render_q, render_q->create_node(player_1, player_1->render));
         render_q->enqueue(render_q, render_q->create_node(player_2, player_2->render));
+        render_q->enqueue(render_q, render_q->create_node(NULL, render_court));
         SDL_RenderClear(renderer);
         render_q = render_q->execute(render_q, renderer);
         SDL_RenderPresent(renderer);
