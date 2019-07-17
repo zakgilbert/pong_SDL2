@@ -2,8 +2,8 @@
 // Created by zachary on 1/23/19.
 //
 
-#include "Header.h"
 #include "Window_and_Renderer.h"
+#include "Header.h"
 
 SDL_Window *make_window(char *name)
 {
