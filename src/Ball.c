@@ -16,14 +16,14 @@ static int get_intersection_left(struct SDL_Rect r1, struct SDL_Rect r2)
 {
     int right_point = (get_middle(r1) - (r1.w / 2));
     int left_point = (get_middle(r2) + (r2.w / 2));
-    printf("Player 2 intersected this ball at %d\n    where the paddle was at %d\n            diff is %d\n", right_point, left_point, (right_point - left_point));
+    // printf("Player 2 intersected this ball at %d\n    where the paddle was at %d\n            diff is %d\n", right_point, left_point, (right_point - left_point));
     return (right_point - left_point);
 }
 static int get_intersection_right(struct SDL_Rect r1, struct SDL_Rect r2)
 {
     int right_point = (get_middle(r1) + (r1.w / 2));
     int left_point = (get_middle(r2) - (r2.w / 2));
-    printf("Player 1 intersected this ball at %d\n    where the paddle was at %d\n            diff is %d\n", right_point, left_point, (right_point - left_point));
+    // printf("Player 1 intersected this ball at %d\n    where the paddle was at %d\n            diff is %d\n", right_point, left_point, (right_point - left_point));
     return (right_point - left_point);
 }
 static int ricochet(Ball *ball, Player *player)
@@ -63,12 +63,23 @@ static void _destroy(Ball *this)
     this = NULL;
 }
 
-static void _behavior(Ball *this)
+static void _behavior(Ball *this, Player *player_1, Player *player_2)
 {
-    if (this->rect.x < -1 || this->rect.x > (WINDOW_WIDTH - this->rect.w))
+    if (this->rect.x < -1)
     {
-        this->rect.x = WINDOW_WIDTH / 2;
+        player_2->score++;
+        this->rect.x = WINDOW_WIDTH - 50;
         this->rect.y = 0;
+        this->vel_x = this->start_vel_x * -1;
+        this->vel_y = this->start_vel_y;
+    }
+    else if (this->rect.x > (WINDOW_WIDTH))
+    {
+        player_1->score++;
+        this->rect.x = 0;
+        this->rect.y = 0;
+        this->vel_x = this->start_vel_x;
+        this->vel_y = this->start_vel_y;
     }
     else if (this->rect.y < -1 || this->rect.y > (WINDOW_HEIGHT - this->rect.h))
         this->vel_y *= -1;
@@ -98,9 +109,10 @@ Ball *ball_create(const char *path, struct SDL_Renderer *renderer)
     this->render = _render;
     this->behavior = _behavior;
     this->collision = _collision;
-
-    this->vel_x = 16;
-    this->vel_y = 8;
+    this->start_vel_x = 16;
+    this->start_vel_y = 8;
+    this->vel_x = this->start_vel_x;
+    this->vel_y = this->start_vel_y;
 
     this->texture = create_texture(renderer, path, &this->rect);
     return this;

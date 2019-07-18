@@ -125,19 +125,19 @@ static void _map(Atlas *this, SDL_Renderer *renderer)
     int i = 0;
     char **alp_str = get_alphabet_str();
     char *path = malloc(50);
-    strcpy(path, "graphics/letters/");
+    strcpy(path, "art/letters/");
     for (i = 0; i < 62; i++)
     {
-        strcpy(path, "graphics/letters/");
+        strcpy(path, "art/letters/");
         this->insert(this, alp_str[i], renderer, strcat(path, alp_str[i]));
     }
-    strcpy(path, "graphics/letters/");
+    strcpy(path, "art/letters/");
     this->insert(this, ":", renderer, strcat(path, ":"));
-    strcpy(path, "graphics/letters/");
+    strcpy(path, "art/letters/");
     this->insert(this, ".", renderer, strcat(path, "per"));
-    strcpy(path, "graphics/letters/");
+    strcpy(path, "art/letters/");
     this->insert(this, "/", renderer, strcat(path, "f_slash"));
-    strcpy(path, "graphics/letters/");
+    strcpy(path, "art/letters/");
     this->insert(this, " ", renderer, strcat(path, "spc4.png"));
 
     free(path);

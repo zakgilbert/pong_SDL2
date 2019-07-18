@@ -15,6 +15,11 @@ int confirm_keystate(int key_val)
     return 1;
 }
 
+static char *_get_score(Player *this)
+{
+    sprintf(this->score_str, "%d", this->score);
+    return this->score_str;
+}
 static void _render(void *obj, struct SDL_Renderer *renderer)
 {
     Player *this = (Player *)obj;
@@ -36,6 +41,7 @@ Player *player_create(struct SDL_Renderer *renderer, int x, int y, int w, int h,
     Player *this = malloc(sizeof(*this));
     this->render = _render;
     this->player_bindings = _player_bindings;
+    this->get_score = _get_score;
 
     this->rect.w = w;
     this->rect.h = h;
@@ -43,6 +49,7 @@ Player *player_create(struct SDL_Renderer *renderer, int x, int y, int w, int h,
     this->rect.y = y;
 
     this->vel = 20;
+    this->score = 0;
 
     this->player = player;
 

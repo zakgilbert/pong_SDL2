@@ -29,6 +29,8 @@ static void _render_letter(struct SDL_Renderer *renderer, struct SDL_Texture *te
 struct SDL_Texture *_get_texture(Line *this, int i)
 {
     struct Alpha_Node *item = this->atlas->search(this->atlas, this->letters[i]->letter);
+    item->rect.w = 40;
+    item->rect.h = 40;
 
     this->letters[i]->rect.x = this->x;
     this->letters[i]->rect.w = item->rect.w;
@@ -74,7 +76,7 @@ static void _destroy(Line *this)
         this = NULL;
     }
 }
-Line *CREATE_LINE(Atlas *atlas, const char *line, int *x, int *y)
+Line *CREATE_LINE(Atlas *atlas, const char *line, int x, int y)
 {
     Line *this = malloc(sizeof(*this));
     this->destroy = _destroy;
@@ -84,10 +86,8 @@ Line *CREATE_LINE(Atlas *atlas, const char *line, int *x, int *y)
 
     this->atlas = atlas;
     this->line = line;
-    this->x = *x;
-    this->y = *y;
-    this->r_x = x;
-    this->r_y = y;
+    this->x = x;
+    this->y = y;
     this->num_let = strlen(this->line);
     this->letters = calloc(this->num_let, sizeof(struct Letter *));
     this->set_letters(this);
