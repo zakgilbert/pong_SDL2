@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "Header.h"
 #include "Ball.h"
+#include "Rectangle_Functions.h"
 
 int confirm_keystate(int key_val)
 {
@@ -14,22 +15,11 @@ int confirm_keystate(int key_val)
     return 1;
 }
 
-enum bindings_player_1
+static char *_get_score(Player *this)
 {
-    W = SDL_SCANCODE_W,
-    S = SDL_SCANCODE_S,
-    A = SDL_SCANCODE_A,
-    D = SDL_SCANCODE_D
-};
-
-enum bindings_player_2
-{
-    UP = SDL_SCANCODE_UP,
-    DOWN = SDL_SCANCODE_DOWN,
-    LEFT = SDL_SCANCODE_LEFT,
-    RIGHT = SDL_SCANCODE_RIGHT
-};
-
+    sprintf(this->score_str, "%d", this->score);
+    return this->score_str;
+}
 static void _render(void *obj, struct SDL_Renderer *renderer)
 {
     Player *this = (Player *)obj;
@@ -38,19 +28,11 @@ static void _render(void *obj, struct SDL_Renderer *renderer)
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 }
 
-static void _player_1_bindings(Player *this)
+static void _player_bindings(Player *this, int up, int down)
 {
-    if (confirm_keystate(W))
+    if (confirm_keystate(up) && this->rect.y > 0)
         this->rect.y -= this->vel;
-    else if (confirm_keystate(S))
-        this->rect.y += this->vel;
-}
-
-static void _player_2_bindings(Player *this)
-{
-    if (confirm_keystate(UP))
-        this->rect.y -= this->vel;
-    else if (confirm_keystate(DOWN))
+    else if (confirm_keystate(down) && get_bottom(this->rect) < WINDOW_HEIGHT)
         this->rect.y += this->vel;
 }
 
@@ -58,8 +40,8 @@ Player *player_create(struct SDL_Renderer *renderer, int x, int y, int w, int h,
 {
     Player *this = malloc(sizeof(*this));
     this->render = _render;
-    this->player_1_bindings = _player_1_bindings;
-    this->player_2_bindings = _player_2_bindings;
+    this->player_bindings = _player_bindings;
+    this->get_score = _get_score;
 
     this->rect.w = w;
     this->rect.h = h;
@@ -67,6 +49,7 @@ Player *player_create(struct SDL_Renderer *renderer, int x, int y, int w, int h,
     this->rect.y = y;
 
     this->vel = 20;
+    this->score = 0;
 
     this->player = player;
 

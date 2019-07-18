@@ -13,6 +13,8 @@
 #include "Render_Q.h"
 #include "Ball.h"
 #include "Player.h"
+#include "Atlas.h"
+#include "Line.h"
 
 static void render_court(void *obj, struct SDL_Renderer *renderer)
 {
@@ -54,6 +56,9 @@ int main(int argc, char **argv)
 
     Ball *ball = ball_create("art/ball.png", renderer);
     Render_Q *render_q = render_q_create();
+    Atlas *atlas = CREATE_ATLAS();
+    atlas->map(atlas, renderer);
+
     Player *player_1 = player_create(renderer,
                                      100,                              // x
                                      ((WINDOW_HEIGHT / 2) - (32 / 2)), // y
@@ -74,6 +79,15 @@ int main(int argc, char **argv)
         render_q->enqueue(render_q, render_q->create_node(player_1, player_1->render));
         render_q->enqueue(render_q, render_q->create_node(player_2, player_2->render));
         render_q->enqueue(render_q, render_q->create_node(NULL, render_court));
+       
+        render_q->enqueue(render_q, render_q->create_node(
+                                        CREATE_LINE(atlas,
+                                                    player_1->get_score(player_1), 250, 50),
+                                        render_line0));
+        render_q->enqueue(render_q, render_q->create_node(
+                                        CREATE_LINE(atlas,
+                                                    player_2->get_score(player_2), WINDOW_WIDTH - 250, 50),
+                                        render_line0));
         SDL_RenderClear(renderer);
         render_q = render_q->execute(render_q, renderer);
         SDL_RenderPresent(renderer);
@@ -88,11 +102,14 @@ int main(int argc, char **argv)
             }
         }
 
-        ball->behavior(ball);
+        ball->behavior(ball, player_1, player_2);
         ball->collision(ball, player_1);
         ball->collision(ball, player_2);
-        player_1->player_1_bindings(player_1);
-        player_1->player_2_bindings(player_2);
+        player_1->player_bindings(player_1, W, S);
+        player_2->player_bindings(player_2, UP, DOWN);
+
+        delay();
+        reset_timer();
     }
     ball->destroy(ball);
     SDL_DestroyRenderer(renderer);
