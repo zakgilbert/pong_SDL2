@@ -9,6 +9,10 @@
 #define MAX_VELOCITY_X (35)
 #define MIN_VELOCITY_Y (16)
 #define MIN_VELOCITY_X (8)
+
+#define PRIME_1 (163)
+#define PRIME_2 (151)
+
 extern Uint8 *key_state;
 Uint8 *key_state;
 

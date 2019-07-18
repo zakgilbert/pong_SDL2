@@ -13,6 +13,8 @@
 #include "Render_Q.h"
 #include "Ball.h"
 #include "Player.h"
+#include "Atlas.h"
+#include "Line.h"
 
 static void render_court(void *obj, struct SDL_Renderer *renderer)
 {
@@ -93,6 +95,9 @@ int main(int argc, char **argv)
         ball->collision(ball, player_2);
         player_1->player_1_bindings(player_1);
         player_1->player_2_bindings(player_2);
+
+        delay();
+        reset_timer();
     }
     ball->destroy(ball);
     SDL_DestroyRenderer(renderer);
