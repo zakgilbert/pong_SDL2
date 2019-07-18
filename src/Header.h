@@ -16,4 +16,19 @@
 extern Uint8 *key_state;
 Uint8 *key_state;
 
+enum bindings_player_1
+{
+    W = SDL_SCANCODE_W,
+    S = SDL_SCANCODE_S,
+    A = SDL_SCANCODE_A,
+    D = SDL_SCANCODE_D
+};
+
+enum bindings_player_2
+{
+    UP = SDL_SCANCODE_UP,
+    DOWN = SDL_SCANCODE_DOWN,
+    LEFT = SDL_SCANCODE_LEFT,
+    RIGHT = SDL_SCANCODE_RIGHT
+};
 #endif

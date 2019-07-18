@@ -93,8 +93,8 @@ int main(int argc, char **argv)
         ball->behavior(ball);
         ball->collision(ball, player_1);
         ball->collision(ball, player_2);
-        player_1->player_1_bindings(player_1);
-        player_1->player_2_bindings(player_2);
+        player_1->player_bindings(player_1, W, S);
+        player_2->player_bindings(player_2, UP, DOWN);
 
         delay();
         reset_timer();

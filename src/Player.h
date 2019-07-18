@@ -14,8 +14,7 @@ typedef struct _Player
 {
     void (*destroy)(struct _Player *this);
     void (*render)(void *obj, struct SDL_Renderer *renderer);
-    void (*player_1_bindings)(struct _Player *this);
-    void (*player_2_bindings)(struct _Player *this);
+    void (*player_bindings)(struct _Player *this, int up, int down);
     struct SDL_Rect rect;
 
     int player;
