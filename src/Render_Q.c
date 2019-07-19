@@ -3,6 +3,12 @@
 	 *  Render_Q.c
 	*/
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include "Render_Q.h"
 
 static void _destroy(Render_Q *this)

@@ -42,6 +42,7 @@ int main(int argc, char **argv)
     }
 
     int quit;
+    TURN = 1;
     key_state = (Uint8 *)SDL_GetKeyboardState(NULL);
 
     struct SDL_Window *window = NULL;
@@ -60,21 +61,17 @@ int main(int argc, char **argv)
     atlas->map(atlas, renderer);
 
     Player *player_1 = player_create(renderer,
-                                     100,                              // x
-                                     ((WINDOW_HEIGHT / 2) - (32 / 2)), // y
-                                     15,                               // width
-                                     100, 0);                          // height
+                                     100,
+                                     ((WINDOW_HEIGHT / 2) - (32 / 2)));
+
     Player *player_2 = player_create(renderer,
-                                     WINDOW_WIDTH - (100 + 15),        // x
-                                     ((WINDOW_HEIGHT / 2) - (32 / 2)), // y
-                                     15,                               // width
-                                     100, 0);                          // height
+                                     WINDOW_WIDTH - (100 + 15),
+                                     ((WINDOW_HEIGHT / 2) - (32 / 2)));
     ball->rect.x = WINDOW_WIDTH / 2;
     ball->rect.y = 0;
     union SDL_Event ev;
     while (!quit)
     {
-        printf("vel_x: %d      vel_y: %d\n", ball->vel_x, ball->vel_y);
         start_timer();
         render_q->enqueue(render_q, render_q->create_node(ball, ball->render));
         render_q->enqueue(render_q, render_q->create_node(player_1, player_1->render));
@@ -102,7 +99,6 @@ int main(int argc, char **argv)
                 break;
             }
         }
-
         ball->behavior(ball, player_1, player_2);
         ball->collision(ball, player_1);
         ball->collision(ball, player_2);
@@ -113,6 +109,9 @@ int main(int argc, char **argv)
         reset_timer();
     }
     ball->destroy(ball);
+    atlas->destroy(atlas);
+    player_1->destroy(player_1);
+    player_2->destroy(player_2);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();

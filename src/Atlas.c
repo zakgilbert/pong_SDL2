@@ -42,14 +42,14 @@ char **get_alphabet_str()
 
     return str;
 }
-struct Alpha_Node *new_alpha_node(const char *key, const char *path, SDL_Renderer *renderer)
+static struct Alpha_Node *new_alpha_node(const char *key, const char *path, SDL_Renderer *renderer)
 {
     struct Alpha_Node *item = malloc(sizeof(struct Alpha_Node));
     item->key = strdup(key);
     item->texture = create_texture(renderer, path, &item->rect);
     return item;
 }
-int hash(const char *letter, int prime, int size)
+static int hash(const char *letter, int prime, int size)
 {
     long hash = 0;
     int i;
@@ -61,7 +61,7 @@ int hash(const char *letter, int prime, int size)
     }
     return (int)hash;
 }
-int hash_code(const char *letter, const int num, const int attempt)
+static int hash_code(const char *letter, const int num, const int attempt)
 {
     int hash_a = hash(letter, PRIME_1, num);
     int hash_b = hash(letter, PRIME_2, num);

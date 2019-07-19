@@ -1,9 +1,6 @@
 #ifndef LINE_H
 #define LINE_H
 
-typedef struct SDL_Rect SDL_Rect;
-typedef struct SDL_Texture SDL_Texture;
-typedef struct SDL_Renderer SDL_Renderer;
 typedef struct _Atlas Atlas;
 
 struct Letter

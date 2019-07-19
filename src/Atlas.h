@@ -1,24 +1,12 @@
 #ifndef ATLAS_H
 #define ATLAS_H
 
-
-typedef struct SDL_Rect SDL_Rect;
-typedef struct SDL_Texture SDL_Texture;
-typedef struct SDL_Renderer SDL_Renderer;
-
-int hash_code(const char *letter, const int num, const int attempt);
-int hash(const char *letter, const int prime, const int size);
-
-char **get_alphabet_str();
 struct Alpha_Node
 {
     SDL_Texture *texture;
     SDL_Rect rect;
     char *key;
 };
-
-struct Alpha_Node *new_alpha_node(const char *key, const char *path, SDL_Renderer *renderer);
-
 
 typedef struct _Atlas
 {

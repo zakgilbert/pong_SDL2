@@ -1,7 +1,11 @@
-//
-// Created by zachary on 1/23/19.
-//
-
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <math.h>
+#include <stdint.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_timer.h>
+#include <SDL2/SDL_image.h>
 #include "Window_and_Renderer.h"
 #include "Header.h"
 

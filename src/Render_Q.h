@@ -1,12 +1,6 @@
 #ifndef RENDER_Q_H
 #define RENDER_Q_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
 
 /**
  * Template for the desired function pointer to be stored in queue

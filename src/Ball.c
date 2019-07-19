@@ -1,46 +1,75 @@
 
 /************************
-	 *  Ball.c           
+	 *  Ball.c   
+     *  Contains all type defined functions for the ping pong ball        
 	*/
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include "Ball.h"
 #include "Header.h"
 #include "Window_and_Renderer.h"
 #include "Player.h"
 
+/**
+ * ratio
+ * such that if x is the returned value
+ * 
+ *         x / MAX_VELOCITY_Y  =  value / 100
+ *  if value = 25 then 
+ *         x / MAX_VELOCITY_Y  =  25 / 100
+ *         x * 100 = MAX_VELOCITY * 25
+ *         x = (MAX_VELOCITY * 25) / 100
+ *         return x         
+ */
 static int ratio(int value)
 {
     int y = MAX_VELOCITY_Y * value;
     return y / 100;
 }
 
+/**
+ * get_middle_y
+ * returns the middle y value of the rectangle
+ */
 static int get_middle_y(struct SDL_Rect rect)
 {
-    // printf("topY: %d\nbottomY: %d\nmiddle: %d\n", rect.y, rect.y + rect.w, (rect.y + (rect.h / 2)));
     return (rect.y + (rect.h / 2));
 }
-static int get_intersection_left(struct SDL_Rect r1, struct SDL_Rect r2)
+
+/**
+ * get_intersection
+ * Returns the difference in middle y values of two rectangles.
+ * 
+ * If the middle_y_value of r1 is 100, and the middle_y_value of r2 is 150
+ * Then the intersection is 50. 
+ */
+static int get_intersection(struct SDL_Rect r1, struct SDL_Rect r2)
 {
     int ball = (get_middle_y(r1));
     int player = (get_middle_y(r2));
-    // printf("Player 2 intersected this ball at %d\n    where the paddle was at %d\n            diff is %d\n", ball, player, (ball - player));
+
     return (ball - player);
 }
-static int get_intersection_right(struct SDL_Rect r1, struct SDL_Rect r2)
-{
-    int ball = (get_middle_y(r1));
-    int player = (get_middle_y(r2));
-    // printf("Player 1 intersected this ball at %d\n    where the paddle was at %d\n            diff is %d\n", ball, player, (ball - player));
-    return (ball - player);
-}
+
+/**
+ * ricochet
+ * Changes the balls velocity to positive or negative.
+ * the value of the velocity is ratio of the intersection of ball and player with respect to the height of the player and the maximum allowed velocity.
+ */
 static int ricochet(Ball *ball, Player *player)
 {
     int neg = 1;
     if (ball->vel_y < 0)
         neg = -1;
 
-    return ball->vel_y = ratio(abs(get_intersection_right(ball->rect, player->rect))) * neg;
+    return ball->vel_y = ratio(abs(get_intersection(ball->rect, player->rect))) * neg;
 }
+
+/* Frees memory allocated in Ball object creation */
 static void _destroy(Ball *this)
 {
     if (NULL != this)
@@ -49,6 +78,7 @@ static void _destroy(Ball *this)
     this = NULL;
 }
 
+/* Determines the balls behavior based on which wall the ball has collided with and postion of the player */
 static void _behavior(Ball *this, Player *player_1, Player *player_2)
 {
     if (this->rect.x < -1)
@@ -80,6 +110,8 @@ static void _behavior(Ball *this, Player *player_1, Player *player_2)
     this->rect.x += this->vel_x;
     this->rect.y += this->vel_y;
 }
+
+/* Checks if the ball has collided with a player */
 static void _collision(Ball *this, Player *player)
 {
     if (SDL_HasIntersection(&this->rect, &player->rect))
@@ -93,6 +125,8 @@ static void _collision(Ball *this, Player *player)
         this->vel_y = ricochet(this, player);
     }
 }
+
+/* Renders ball image */
 static void _render(void *obj, struct SDL_Renderer *renderer)
 {
     Ball *this = (Ball *)obj;
@@ -108,8 +142,8 @@ Ball *ball_create(const char *path, struct SDL_Renderer *renderer)
     this->render = _render;
     this->behavior = _behavior;
     this->collision = _collision;
-    this->start_vel_x = 16;
-    this->start_vel_y = 8;
+    this->start_vel_x = MIN_VELOCITY_X;
+    this->start_vel_y = MIN_VELOCITY_Y;
     this->vel_x = this->start_vel_x;
     this->vel_y = this->start_vel_y;
 
