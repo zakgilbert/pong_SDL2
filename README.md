@@ -6,9 +6,7 @@ clone project
 
 ***Be sure you have SDL2 installed***
 
-``` cd SDL2_pong ```
-
-``` make ```
-
-``` ./game ```
+``` cd SDL2_pong 
+    make 
+    ./game ```
 
