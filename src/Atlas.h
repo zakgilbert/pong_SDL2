@@ -21,5 +21,4 @@ typedef struct _Atlas
 
 } Atlas;
 Atlas *CREATE_ATLAS();
-void render_letter(void *obj, SDL_Renderer *renderer);
 #endif /* ATLAS_H */

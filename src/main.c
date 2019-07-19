@@ -16,22 +16,6 @@
 #include "Atlas.h"
 #include "Line.h"
 
-static void render_court(void *obj, struct SDL_Renderer *renderer)
-{
-    struct SDL_Rect rect;
-    rect.w = 6;
-    rect.h = 30;
-    rect.x = (WINDOW_WIDTH / 2) - (rect.w / 2);
-    rect.y = 0;
-
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
-    while (rect.y + rect.h <= WINDOW_HEIGHT)
-    {
-        SDL_RenderFillRect(renderer, &rect);
-        rect.y += rect.h + 10;
-    }
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
-}
 int main(int argc, char **argv)
 {
 
@@ -116,4 +100,21 @@ int main(int argc, char **argv)
     SDL_DestroyWindow(window);
     SDL_Quit();
     return 0;
+}
+
+static void render_court(void *obj, struct SDL_Renderer *renderer)
+{
+    struct SDL_Rect rect;
+    rect.w = 6;
+    rect.h = 30;
+    rect.x = (WINDOW_WIDTH / 2) - (rect.w / 2);
+    rect.y = 0;
+
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
+    while (rect.y + rect.h <= WINDOW_HEIGHT)
+    {
+        SDL_RenderFillRect(renderer, &rect);
+        rect.y += rect.h + 10;
+    }
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 }

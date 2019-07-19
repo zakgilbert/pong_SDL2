@@ -156,19 +156,3 @@ Atlas *CREATE_ATLAS()
 
     return this;
 }
-void render_letter(void *obj, SDL_Renderer *renderer)
-{
-    Atlas *this = (Atlas *)obj;
-    int i, x, y;
-    x = 0;
-    y = 0;
-
-    for (i = 0; i < 62; i++)
-    {
-        this->letters[i]->rect.x = x;
-        this->letters[i]->rect.y = y;
-        this->render(this->letters[i], renderer);
-        x += 8;
-        y += 8;
-    }
-}
