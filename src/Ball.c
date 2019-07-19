@@ -8,52 +8,38 @@
 #include "Window_and_Renderer.h"
 #include "Player.h"
 
-static int get_middle(struct SDL_Rect rect)
+static int ratio(int value)
 {
-    return ((rect.x + (rect.w / 2)) + (rect.y + (rect.h / 2)));
+    int y = MAX_VELOCITY_Y * value;
+    return y / 100;
+}
+
+static int get_middle_y(struct SDL_Rect rect)
+{
+    // printf("topY: %d\nbottomY: %d\nmiddle: %d\n", rect.y, rect.y + rect.w, (rect.y + (rect.h / 2)));
+    return (rect.y + (rect.h / 2));
 }
 static int get_intersection_left(struct SDL_Rect r1, struct SDL_Rect r2)
 {
-    int right_point = (get_middle(r1) - (r1.w / 2));
-    int left_point = (get_middle(r2) + (r2.w / 2));
-    // printf("Player 2 intersected this ball at %d\n    where the paddle was at %d\n            diff is %d\n", right_point, left_point, (right_point - left_point));
-    return (right_point - left_point);
+    int ball = (get_middle_y(r1));
+    int player = (get_middle_y(r2));
+    // printf("Player 2 intersected this ball at %d\n    where the paddle was at %d\n            diff is %d\n", ball, player, (ball - player));
+    return (ball - player);
 }
 static int get_intersection_right(struct SDL_Rect r1, struct SDL_Rect r2)
 {
-    int right_point = (get_middle(r1) + (r1.w / 2));
-    int left_point = (get_middle(r2) - (r2.w / 2));
-    // printf("Player 1 intersected this ball at %d\n    where the paddle was at %d\n            diff is %d\n", right_point, left_point, (right_point - left_point));
-    return (right_point - left_point);
+    int ball = (get_middle_y(r1));
+    int player = (get_middle_y(r2));
+    // printf("Player 1 intersected this ball at %d\n    where the paddle was at %d\n            diff is %d\n", ball, player, (ball - player));
+    return (ball - player);
 }
 static int ricochet(Ball *ball, Player *player)
 {
     int neg = 1;
-    if (ball->vel_x > 0)
-    {
-        if (ball->vel_y < 0)
-        {
-            ball->vel_y = abs(get_intersection_right(ball->rect, player->rect)) * -1;
-            neg = -1;
-        }
-        else
-            ball->vel_y = abs(get_intersection_right(ball->rect, player->rect));
-    }
-    else if (ball->vel_x < 0)
-    {
-        if (ball->vel_y < 0)
-        {
-            ball->vel_y = abs(get_intersection_left(ball->rect, player->rect)) * -1;
-            neg = -1;
-        }
-        else
-            ball->vel_y = abs(get_intersection_left(ball->rect, player->rect));
-    }
-    if (abs(ball->vel_y) > MAX_VELOCITY_Y)
-    {
-        return MAX_VELOCITY_Y * neg;
-    }
-    return ball->vel_y;
+    if (ball->vel_y < 0)
+        neg = -1;
+
+    return ball->vel_y = ratio(abs(get_intersection_right(ball->rect, player->rect))) * neg;
 }
 static void _destroy(Ball *this)
 {
@@ -69,20 +55,28 @@ static void _behavior(Ball *this, Player *player_1, Player *player_2)
     {
         player_2->score++;
         this->rect.x = WINDOW_WIDTH - 50;
-        this->rect.y = 0;
         this->vel_x = this->start_vel_x * -1;
         this->vel_y = this->start_vel_y;
+        if ((player_2->rect.y + (player_2->rect.h / 2)) > WINDOW_HEIGHT / 2)
+            this->rect.y = 0;
+        else
+            this->rect.y = WINDOW_HEIGHT - 50;
     }
     else if (this->rect.x > (WINDOW_WIDTH))
     {
         player_1->score++;
         this->rect.x = 0;
-        this->rect.y = 0;
         this->vel_x = this->start_vel_x;
         this->vel_y = this->start_vel_y;
+        if ((player_1->rect.y + (player_1->rect.h / 2)) > WINDOW_HEIGHT / 2)
+            this->rect.y = 0;
+        else
+            this->rect.y = WINDOW_HEIGHT - 50;
     }
     else if (this->rect.y < -1 || this->rect.y > (WINDOW_HEIGHT - this->rect.h))
+    {
         this->vel_y *= -1;
+    }
     this->rect.x += this->vel_x;
     this->rect.y += this->vel_y;
 }
@@ -91,6 +85,11 @@ static void _collision(Ball *this, Player *player)
     if (SDL_HasIntersection(&this->rect, &player->rect))
     {
         this->vel_x *= -1;
+        if (this->vel_x < 0)
+            this->vel_x--;
+        else
+            this->vel_x++;
+
         this->vel_y = ricochet(this, player);
     }
 }

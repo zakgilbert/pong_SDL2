@@ -48,8 +48,8 @@ int main(int argc, char **argv)
     struct SDL_Renderer *renderer = NULL;
     window = make_window("Window");
     renderer = make_renderer(&window);
-    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "best");
-    SDL_RenderSetLogicalSize(renderer, WINDOW_WIDTH, WINDOW_HEIGHT);
+    // SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "best");
+    // SDL_RenderSetLogicalSize(renderer, WINDOW_WIDTH, WINDOW_HEIGHT);
 
     set_up_timer();
     quit = 0;
@@ -74,19 +74,20 @@ int main(int argc, char **argv)
     union SDL_Event ev;
     while (!quit)
     {
+        printf("vel_x: %d      vel_y: %d\n", ball->vel_x, ball->vel_y);
         start_timer();
         render_q->enqueue(render_q, render_q->create_node(ball, ball->render));
         render_q->enqueue(render_q, render_q->create_node(player_1, player_1->render));
         render_q->enqueue(render_q, render_q->create_node(player_2, player_2->render));
         render_q->enqueue(render_q, render_q->create_node(NULL, render_court));
-       
+
         render_q->enqueue(render_q, render_q->create_node(
                                         CREATE_LINE(atlas,
                                                     player_1->get_score(player_1), 250, 50),
                                         render_line0));
         render_q->enqueue(render_q, render_q->create_node(
                                         CREATE_LINE(atlas,
-                                                    player_2->get_score(player_2), WINDOW_WIDTH - 250, 50),
+                                                    player_2->get_score(player_2), WINDOW_WIDTH - 275, 50),
                                         render_line0));
         SDL_RenderClear(renderer);
         render_q = render_q->execute(render_q, renderer);
