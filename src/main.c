@@ -62,15 +62,9 @@ int main(int argc, char **argv)
         render_q->enqueue(render_q, render_q->create_node(player_1, player_1->render));
         render_q->enqueue(render_q, render_q->create_node(player_2, player_2->render));
         render_q->enqueue(render_q, render_q->create_node(NULL, render_court));
+        render_q->enqueue(render_q, render_q->create_node( CREATE_LINE(atlas, player_1->get_score(player_1), 250, 50), render_line0));
+        render_q->enqueue(render_q, render_q->create_node( CREATE_LINE(atlas, player_2->get_score(player_2), WINDOW_WIDTH - 275, 50), render_line0));
 
-        render_q->enqueue(render_q, render_q->create_node(
-                                        CREATE_LINE(atlas,
-                                                    player_1->get_score(player_1), 250, 50),
-                                        render_line0));
-        render_q->enqueue(render_q, render_q->create_node(
-                                        CREATE_LINE(atlas,
-                                                    player_2->get_score(player_2), WINDOW_WIDTH - 275, 50),
-                                        render_line0));
         SDL_RenderClear(renderer);
         render_q = render_q->execute(render_q, renderer);
         SDL_RenderPresent(renderer);

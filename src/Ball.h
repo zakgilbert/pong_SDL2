@@ -24,6 +24,8 @@ typedef struct _Ball
     int vel_y;
     int start_vel_x;
     int start_vel_y;
+    
+    int ball_in_play;
 
 } Ball;
 
