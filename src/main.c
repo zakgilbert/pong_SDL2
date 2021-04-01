@@ -16,6 +16,7 @@
 #include "Atlas.h"
 #include "Line.h"
 
+ void render_court(void *obj, struct SDL_Renderer *renderer);
 int main(int argc, char **argv)
 {
 
@@ -102,7 +103,7 @@ int main(int argc, char **argv)
     return 0;
 }
 
-static void render_court(void *obj, struct SDL_Renderer *renderer)
+ void render_court(void *obj, struct SDL_Renderer *renderer)
 {
     struct SDL_Rect rect;
     rect.w = 6;
