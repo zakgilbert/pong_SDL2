@@ -66,7 +66,7 @@ static int ricochet(Ball* ball, Player* player)
     if (ball->vel_y < 0)
         neg = -1;
 
-    return ball->vel_y = ratio(abs(get_intersection(ball->rect, player->rect))) * neg;
+    return ratio(abs(get_intersection(ball->rect, player->rect))) * neg;
 }
 
 /* Frees memory allocated in Ball object creation */
@@ -87,7 +87,7 @@ static void _behavior(Ball* this, Player* player_1, Player* player_2)
             this->ball_in_play = 0;
         }
         this->rect.x = WINDOW_WIDTH - 50;
-        this->vel_x  = this->start_vel_x * -1;
+        this->vel_x  = -this->start_vel_x;
         this->vel_y  = this->start_vel_y;
         if ((player_2->rect.y + (player_2->rect.h / 2)) > WINDOW_HEIGHT / 2)
             this->rect.y = 0;
