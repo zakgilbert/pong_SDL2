@@ -19,25 +19,25 @@ int confirm_keystate(int key_val)
         return 0;
     return 1;
 }
-static void _destroy(Player *this)
+static void _destroy(Player* this)
 {
     if (NULL != this)
         free(this);
 }
-static char *_get_score(Player *this)
+static char* _get_score(Player* this)
 {
     sprintf(this->score_str, "%d", this->score);
     return this->score_str;
 }
-static void _render(void *obj, struct SDL_Renderer *renderer)
+static void _render(void* obj, struct SDL_Renderer* renderer)
 {
-    Player *this = (Player *)obj;
+    Player* this = (Player*)obj;
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
     SDL_RenderFillRect(renderer, &this->rect);
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 }
 
-static void _player_bindings(Player *this, int up, int down)
+static void _player_bindings(Player* this, int up, int down)
 {
     if (confirm_keystate(up) && this->rect.y > 0)
         this->rect.y -= PLAYER_VELOCITY;
@@ -45,14 +45,14 @@ static void _player_bindings(Player *this, int up, int down)
         this->rect.y += PLAYER_VELOCITY;
 }
 
-Player *player_create(struct SDL_Renderer *renderer, int x, int y)
+Player* player_create(struct SDL_Renderer* renderer, int x, int y)
 {
-    Player *this = malloc(sizeof(*this));
+    Player* this = malloc(sizeof(*this));
 
-    this->destroy = _destroy;
-    this->render = _render;
+    this->destroy         = _destroy;
+    this->render          = _render;
     this->player_bindings = _player_bindings;
-    this->get_score = _get_score;
+    this->get_score       = _get_score;
 
     this->rect.x = x;
     this->rect.y = y;

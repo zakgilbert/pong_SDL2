@@ -14,39 +14,18 @@
 #include "Window_and_Renderer.h"
 #include "Player.h"
 
-/**
- * ratio
- * such that if x is the returned value
- * 
- *         x / MAX_VELOCITY_Y  =  value / 100
- *  if value = 25 then 
- *         x / MAX_VELOCITY_Y  =  25 / 100
- *         x * 100 = MAX_VELOCITY * 25
- *         x = (MAX_VELOCITY * 25) / 100
- *         return x         
- */
 static int ratio(int value)
 {
     int y = MAX_VELOCITY_Y * value;
     return y / 100;
 }
 
-/**
- * get_middle_y
- * returns the middle y value of the rectangle
- */
 static int get_middle_y(struct SDL_Rect rect)
 {
     return (rect.y + (rect.h / 2));
 }
 
-/**
- * get_intersection
- * Returns the difference in middle y values of two rectangles.
- * 
- * If the middle_y_value of r1 is 100, and the middle_y_value of r2 is 150
- * Then the intersection is 50. 
- */
+/* Get the point from the middle of two rectangles intersection. */
 static int get_intersection(struct SDL_Rect r1, struct SDL_Rect r2)
 {
     int ball   = (get_middle_y(r1));
@@ -55,21 +34,20 @@ static int get_intersection(struct SDL_Rect r1, struct SDL_Rect r2)
     return (ball - player);
 }
 
-/**
- * ricochet
- * Changes the balls velocity to positive or negative.
- * the value of the velocity is ratio of the intersection of ball and player with respect to the height of the player and the maximum allowed velocity.
- */
-static int ricochet(Ball* ball, Player* player)
+/* Bounce the ball off a wall. */
+static int ricochet(Ball* ball, Player* player, SDL_Rect* in)
 {
     int neg = 1;
-    if (ball->vel_y < 0)
+    if (ball->vel_y < 0) {
         neg = -1;
+        ball->rect.y += in->h;
+    } else {
+        ball->rect.y -= in->h;
+    }
 
     return ratio(abs(get_intersection(ball->rect, player->rect))) * neg;
 }
-
-/* Frees memory allocated in Ball object creation */
+/* Deallocate. */
 static void _destroy(Ball* this)
 {
     if (NULL != this)
@@ -78,7 +56,7 @@ static void _destroy(Ball* this)
     this = NULL;
 }
 
-/* Determines the balls behavior based on which wall the ball has collided with and postion of the player */
+/* Check where the ball should start after a point is scored. */
 static void _behavior(Ball* this, Player* player_1, Player* player_2)
 {
     if (this->rect.x < -1) {
@@ -112,22 +90,26 @@ static void _behavior(Ball* this, Player* player_1, Player* player_2)
     this->rect.y += this->vel_y;
 }
 
-/* Checks if the ball has collided with a player */
+/* Collided ball with a player. */
 static void _collision(Ball* this, Player* player)
 {
-    if (SDL_HasIntersection(&player->rect, &this->rect)) {
+    SDL_Rect intersect;
+    if (SDL_IntersectRect(&player->rect, &this->rect, &intersect)) {
+
         this->ball_in_play = 1;
         this->vel_x        = -this->vel_x;
-        if (this->vel_x < 0)
+        if (this->vel_x < 0) {
             this->vel_x--;
-        else
+            this->rect.x -= intersect.w;
+        } else if (this->vel_x >= 0) {
             this->vel_x++;
-
-        this->vel_y = ricochet(this, player);
+            this->rect.x += intersect.w * 2;
+        }
+        this->vel_y = ricochet(this, player, &intersect);
     }
 }
 
-/* Renders ball image */
+/* Render ball image. */
 static void _render(void* obj, struct SDL_Renderer* renderer)
 {
     Ball* this = (Ball*)obj;
@@ -137,22 +119,23 @@ static void _render(void* obj, struct SDL_Renderer* renderer)
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 }
 
+/* Initialize the ball object. */
 Ball* ball_create(const char* path, struct SDL_Renderer* renderer)
 {
     Ball* this = malloc(sizeof(*this));
 
-    this->destroy     = _destroy;
-    this->render      = _render;
-    this->behavior    = _behavior;
-    this->collision   = _collision;
-    this->start_vel_x = MIN_VELOCITY_X;
-    this->start_vel_y = MIN_VELOCITY_Y;
-    this->vel_x       = this->start_vel_x;
-    this->vel_y       = this->start_vel_y;
+    this->destroy   = _destroy;
+    this->render    = _render;
+    this->behavior  = _behavior;
+    this->collision = _collision;
 
+    this->start_vel_x  = MIN_VELOCITY_X;
+    this->start_vel_y  = MIN_VELOCITY_Y;
+    this->vel_x        = this->start_vel_x;
+    this->vel_y        = this->start_vel_y;
     this->ball_in_play = 0;
+    this->rect.w       = BALL_SIZE;
+    this->rect.h       = BALL_SIZE;
 
-    this->rect.w = 15;
-    this->rect.h = 15;
     return this;
 }

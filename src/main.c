@@ -16,73 +16,66 @@
 #include "Atlas.h"
 #include "Line.h"
 
- void render_court(void *obj, struct SDL_Renderer *renderer);
-int main(int argc, char **argv)
+void render_court(void* obj, struct SDL_Renderer* renderer);
+int main(int argc, char** argv)
 {
 
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0)
-    {
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0) {
         printf("error creating renderer: %s\n", SDL_GetError());
         return 1;
     }
 
     int quit;
-    TURN = 1;
-    key_state = (Uint8 *)SDL_GetKeyboardState(NULL);
+    TURN      = 1;
+    key_state = (Uint8*)SDL_GetKeyboardState(NULL);
 
-    struct SDL_Window *window = NULL;
-    struct SDL_Renderer *renderer = NULL;
-    window = make_window("Window");
-    renderer = make_renderer(&window);
+    struct SDL_Window* window     = NULL;
+    struct SDL_Renderer* renderer = NULL;
+    window                        = make_window("Window");
+    renderer                      = make_renderer(&window);
     // SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "best");
     // SDL_RenderSetLogicalSize(renderer, WINDOW_WIDTH, WINDOW_HEIGHT);
 
     set_up_timer();
     quit = 0;
 
-    Ball *ball = ball_create("art/ball.png", renderer);
-    Render_Q *render_q = render_q_create();
-    Atlas *atlas = CREATE_ATLAS();
+    Ball* ball         = ball_create("art/ball.png", renderer);
+    Render_Q* render_q = render_q_create();
+    Atlas* atlas       = CREATE_ATLAS();
     atlas->map(atlas, renderer);
 
-    Player *player_1 = player_create(renderer,
-                                     100,
-                                     ((WINDOW_HEIGHT / 2) - (32 / 2)));
+    Player* player_1 = player_create(renderer, 100, ((WINDOW_HEIGHT / 2) - (32 / 2)));
+    Player* player_2 = player_create(renderer, WINDOW_WIDTH - (100 + 15), ((WINDOW_HEIGHT / 2) - (32 / 2)));
+    ball->rect.x     = WINDOW_WIDTH / 2;
+    ball->rect.y     = 0;
 
-    Player *player_2 = player_create(renderer,
-                                     WINDOW_WIDTH - (100 + 15),
-                                     ((WINDOW_HEIGHT / 2) - (32 / 2)));
-    ball->rect.x = WINDOW_WIDTH / 2;
-    ball->rect.y = 0;
     union SDL_Event ev;
-    while (!quit)
-    {
+
+    while (!quit) {
         start_timer();
         render_q->enqueue(render_q, render_q->create_node(ball, ball->render));
         render_q->enqueue(render_q, render_q->create_node(player_1, player_1->render));
         render_q->enqueue(render_q, render_q->create_node(player_2, player_2->render));
         render_q->enqueue(render_q, render_q->create_node(NULL, render_court));
-        render_q->enqueue(render_q, render_q->create_node( CREATE_LINE(atlas, player_1->get_score(player_1), 250, 50), render_line0));
-        render_q->enqueue(render_q, render_q->create_node( CREATE_LINE(atlas, player_2->get_score(player_2), WINDOW_WIDTH - 275, 50), render_line0));
+        render_q->enqueue(render_q, render_q->create_node(CREATE_LINE(atlas, player_1->get_score(player_1), 250, 50), render_line0));
+        render_q->enqueue(render_q, render_q->create_node(CREATE_LINE(atlas, player_2->get_score(player_2), WINDOW_WIDTH - 275, 50), render_line0));
 
         SDL_RenderClear(renderer);
         render_q = render_q->execute(render_q, renderer);
         SDL_RenderPresent(renderer);
 
-        while (SDL_PollEvent(&ev) != 0)
-        {
-            switch (ev.type)
-            {
+        while (SDL_PollEvent(&ev) != 0) {
+            switch (ev.type) {
             case SDL_QUIT:
                 quit = 1;
                 break;
             }
         }
-        ball->behavior(ball, player_1, player_2);
-        ball->collision(ball, player_1);
-        ball->collision(ball, player_2);
-        player_1->player_bindings(player_1, W, S);
         player_2->player_bindings(player_2, UP, DOWN);
+        player_1->player_bindings(player_1, W, S);
+        ball->collision(ball, player_2);
+        ball->collision(ball, player_1);
+        ball->behavior(ball, player_1, player_2);
 
         delay();
         reset_timer();
@@ -97,7 +90,7 @@ int main(int argc, char **argv)
     return 0;
 }
 
- void render_court(void *obj, struct SDL_Renderer *renderer)
+void render_court(void* obj, struct SDL_Renderer* renderer)
 {
     struct SDL_Rect rect;
     rect.w = 6;
@@ -106,8 +99,7 @@ int main(int argc, char **argv)
     rect.y = 0;
 
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
-    while (rect.y + rect.h <= WINDOW_HEIGHT)
-    {
+    while (rect.y + rect.h <= WINDOW_HEIGHT) {
         SDL_RenderFillRect(renderer, &rect);
         rect.y += rect.h + 10;
     }
