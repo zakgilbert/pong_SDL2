@@ -11,3 +11,5 @@ Pong Implemented in SDL2
 - Down -> down-key
 - Left -> left-key
 - Right -> right-key
+
+![plot](./gamePlay.png)
